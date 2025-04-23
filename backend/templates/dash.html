@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sundown Studio</title>
+    <link rel="shortcut icon" href="./icon.png" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/dash.css">
+</head>
+
+<body>
+
+
+    <div id="main">
+
+        <div id="page1" style="margin-bottom: 30px;">
+            <nav>
+                <img id="logo" style="height: 100px;" src="/static/logo.svg"
+                    alt="">
+                <div id="nav-part2">
+                    <h4><a href="/">Home</a></h4>
+                    <h4><a href="/inspector">Inspector</a></h4>
+                    <h4><a href="/dash">Dashboard</a></h4>
+                    <h4><a href="/history">History</a></h4>
+                </div>
+                <h3>Menu</h3>
+            </nav>
+            <!-- new code -->
+            <div id="Dashboard">
+                <div id="Dashboard_header">
+                    <button><a href="#char1">DEFECTIVE OR OKAY</a></button>
+                    <button><a href="#horizontal">TIME SPAM</a></button>
+                    <button><a href="#char3">DEFECT CATEGORY DISTRIBUTION</a></button>
+
+
+                </div>
+            </div>
+            <hr style="margin-bottom: 30px; margin-top: 10px;" id="horizontal">
+            <h1 style="text-align: center;  width: 100%; margin-bottom: 30px; margin-top: 1px;">DEFECTIVE OR OKAY</h1>
+            <section class="chart" id="char1">
+                <div class="write" style=" width: 400px; padding-right: 20px;">
+                    <p style="font-size:x-large; text-align:unset;">The bar chart illustrates the frequency distribution
+                        of "OK" or "Defective" based on imaging data,
+                        providing insights into the overall quality of the inspected parts.</p>
+                </div>
+                <div class="graph" style="float: right; width: 500px;">
+                    <canvas id="bar" width="500px" height="400px"></canvas>
+                    <script>
+                        var ctx1 = document.getElementById('bar').getContext('2d');
+                        var label1 = {{ Labels_bar| tojson }};
+                        var value1 = {{ Data_bar| tojson }};
+
+                        var barChart = new Chart(ctx1, {
+                            type: "bar",
+                            data: {
+                                labels: label1,
+                                datasets: [{
+                                    label: "BAR PLOT",
+                                    data: value1,
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: "rgb(0,0,0)",
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: false
+                            }
+                        });
+                    </script>
+                </div>
+
+            </section>
+            <hr style="margin: 30px 0px;" id="horizontal">
+            <h1 style="text-align: center;  width: 100%; margin: 30px 0px;">TIME SPAM</h1>
+            <section class="chart" id="char2" style="margin-top:25px;">
+
+                <div>
+                    <div>
+                        <div class="graph" style="float: right; width: 500px;">
+                            <canvas id="line" width="500px" height="400px"></canvas>
+                            <script>
+                                var ctx2 = document.getElementById('line').getContext('2d');
+                                var line_label = {{ Line_labels| tojson }};
+                                var def_value = {{ line_def| tojson }};
+                                var ok_value = {{ line_ok| tojson }};
+                                console.log(line_label)
+                                var lineChart = new Chart(ctx2, {
+                                    type: "line",
+                                    data: {
+                                        labels: line_label,
+                                        datasets: [{
+                                            label: "DEFECTIVE",
+                                            data: def_value,
+                                            fill: false,
+                                            borderColor: "rgb(199, 219, 156)",
+                                            tension: 0.1
+                                        }, {
+                                            label: "NOT DEFECTIVE",
+                                            data: ok_value,
+                                            fill: false,
+                                            borderColor: "rgb(216, 64, 64)",
+
+                                            tension: 0.1
+                                        }
+                                        ]
+                                    },
+                                    options: {
+                                        responsive: false
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="write" style="float: left; width: 400px; padding-right: 20px;">
+                    The bar chart illustrates the frequency distribution of "OK" or "Defective" based on imaging data,
+                    providing insights into the overall quality of the inspected parts.
+                </div>
+            </section>
+            <hr style="margin: 30px 0px;">
+            <h1 style="text-align: center;  width: 100%; margin: 30px 0px;">DEFECT CATEGORY DISTRIBUTION</h1>
+            <section class="chart" id="char3">
+                <div class=" write" style="float: left; width: 400px; padding-right: 20px;">
+                The bar chart illustrates the frequency distribution of "OK" or "Defective" based on imaging data,
+                providing insights into the overall quality of the inspected parts.
+        </div>
+        <div class="graph" style="float: right; width: 500px; margin-top: 25px; margin-bottom: 30px;">
+            <canvas id="pie" width="500px" height="400px"></canvas>
+            <script>
+                var ctx3 = document.getElementById('pie').getContext('2d');
+                var pie_label = {{ pie_labels| tojson }};
+                var pie_value = {{ pie_values| tojson }};
+
+                console.log(pie_label)
+                console.log(pie_value)
+                var pieChart = new Chart(ctx3, {
+                    type: "doughnut",
+                    data: {
+                        labels: pie_label,
+                        datasets: [{
+                            label: pie_label,
+                            data: pie_value,
+                            fill: false,
+                            borderColor: "rgb(255, 99, 132)",
+                            backgroundColor: [
+                                'rgb(204,51,0)',
+                                'rgba(255,153,102)',
+                                'rgb(255,204,0)',
+                                'rgb(153,204,51)',
+                                'rgb(51,153,0)',
+
+                            ],
+                            tension: 0.1
+                        }
+                        ]
+                    },
+                    options: {
+                        responsive: false
+                    }
+                });
+            </script>
+        </div>
+        </section>
+
+
+    </div>
+
+
+
+
+
+
+    <!-- end new -->
+
+    <div id="full-scr">
+        <div id="full-div1">
+
+        </div>
+    </div>
+    </div>
+    <div id="footer">
+
+        <div id="footer-bottom">
+
+        </div>
+    </div>
+</body>
+
+</html>
+<!--  -->

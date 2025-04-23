@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defect Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="/static/inspector.css">
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        img { border: 2px solid black; margin-top: 10px; }
+        button { padding: 10px 20px; font-size: 16px; margin: 10px; cursor: pointer; }
+        .container { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div id="main">
+
+        <div id="page1" style="">
+    <nav>
+        <img id="logo" style="height: 100px;" src="/static/logo.svg"
+            alt="">
+        <div id="nav-part2">
+            <h4><a href="/">Home</a></h4>
+            <h4><a href="/inspector">Inspector</a></h4>
+            <h4><a href="/dash">Dashboard</a></h4>
+            <h4><a href="/history">History</a></h4>
+        </div>
+        <h3>Menu</h3>
+    </nav>
+
+    <h1>Real-Time Defect Detection</h1>
+    
+    <!-- Video Stream Section -->
+    
+    <label for="interval">Detection Interval (seconds): </label>
+    <input type="number" id="interval" value="{{ detection_interval }}" min="1">
+    <button onclick="updateInterval()">Set Interval</button>
+
+    <br>
+    <img src="{{ url_for('video_feed') }}" width="60%" alt="Video Stream">
+
+    <script>
+        function updateInterval() {
+            const newInterval = document.getElementById("interval").value;
+            fetch("/set_interval", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ interval: newInterval })
+            })
+            .then(response => response.json())
+            .then(data => alert("Interval updated to " + data.new_interval + " seconds"))
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+    <p id="predictionStatus" style="font-size: 18px; font-weight: bold; color: green;">Prediction: Running</p>
+
+    <button onclick="togglePrediction(false)">Stop Prediction</button>
+    <button onclick="togglePrediction(true)">Resume Prediction</button>
+    
+    <script>
+        function togglePrediction(enable) {
+            fetch("/toggle_prediction", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ enabled: enable })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let statusText = document.getElementById("predictionStatus");
+                if (enable) {
+                    statusText.textContent = "Prediction: Running";
+                    statusText.style.color = "green";
+                } else {
+                    statusText.textContent = "Prediction: Stopped";
+                    statusText.style.color = "red";
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+
+    <!-- Upload and Predict Section -->
+    <div class="container">
+        <h1>Defect Detection System - Upload Image</h1>
+        <input type="file" id="fileInput" accept="image/*">
+        <button onclick="uploadImage()">Upload & Predict</button>
+        
+        <div id="output">
+            <h2>Result:</h2>
+            <img id="uploadedImage" src="" alt="Uploaded Image">
+            <p id="prediction"></p>
+        </div>
+    </div>
+    </div>
+    </div>
+    <script>
+        function uploadImage() {
+            let fileInput = document.getElementById("fileInput");
+            let file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select an image first.");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("file", file);
+
+            fetch("/predict", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("uploadedImage").src = URL.createObjectURL(file);
+                document.getElementById("prediction").innerText = `Class: ${data.class}`;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>

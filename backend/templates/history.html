@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>History</title>
+    <link rel="stylesheet" type="text/css" href="/static/history.css">
+</head>
+
+<body style="display: flex; flex-direction: column; background-color: #EFEAE3;">
+    
+    <nav style="padding-left: 100px;">
+        <img id="logo" style="height: 100px;" src="/static/logo.svg" alt="">
+        <div style="padding-right: 130px;" id="nav-part2">
+            <h4><a href="/">Home</a></h4>
+            <h4><a href="/inspector">Inspector</a></h4>
+            <h4><a href="/dash">Dashboard</a></h4>
+            <h4><a href="/history">History</a></h4>
+        </div>
+        <h3>Menu</h3>
+    </nav>
+    <main class="table" id="customers_table" style="margin-bottom: 15px;">
+        <section class="table__header">
+            <h1 style="padding-left: 15px;">History</h1>
+
+        </section>
+        <section class="table__body">
+            <table>
+                <thead>
+                    <tr>
+                        <th> Id <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Status <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Confidence <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> History Date <span class="icon-arrow">&UpArrow;</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for i in data%}
+                    <tr>
+                        <td> {{ loop.index0 +1 }} </td>
+                        <td>
+                            {%if i[1]=="OK"%}
+                            <p class="status delivered">{{i[1]}}</p>
+                            {%else%}
+                            <p class="status cancelled"> {{i[1]}}</p>
+                            {%endif%}
+                        </td>
+                        <td> {{i[2]}} </td>
+                        <td> {{i[3]}} </td>
+
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    
+
+</body>
+
+</html>
